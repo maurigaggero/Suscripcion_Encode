@@ -10,7 +10,7 @@ using Suscripcion_Encode.Server.Data;
 namespace Suscripcion_Encode.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210224170958_new")]
+    [Migration("20210224181720_new")]
     partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,8 +54,9 @@ namespace Suscripcion_Encode.Server.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Apellido")
-                        .HasColumnType("int");
+                    b.Property<string>("Apellido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Direccion")
                         .IsRequired()
@@ -75,8 +76,8 @@ namespace Suscripcion_Encode.Server.Migrations
 
                     b.Property<string>("NumeroDocumento")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Password")
                         .IsRequired()

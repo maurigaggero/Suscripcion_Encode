@@ -26,6 +26,9 @@ namespace Suscripcion_Encode.Server
         {
             services.AddDbContext<DataContext>();
 
+            services.AddControllers().AddNewtonsoftJson
+                (options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

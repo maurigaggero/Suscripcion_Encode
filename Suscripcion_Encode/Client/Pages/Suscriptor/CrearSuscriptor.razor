@@ -1,0 +1,19 @@
+﻿@page "/"
+
+@using Suscripcion_Encode.Shared
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<h3>Crear Suscriptor</h3>
+
+<FormSuscriptor suscriptor="suscriptor" OnValidSubmit="NuevaSuscripcion"></FormSuscriptor>
+
+@code {
+    Suscriptor suscriptor = new Suscriptor();
+
+    async Task NuevaSuscripcion()
+    {
+        await Http.PostAsJsonAsync($"api/suscriptores", suscriptor);
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,0 +1,80 @@
+﻿@inject NavigationManager NavigationManager
+@using Suscripcion_Encode.Shared
+
+<EditForm Model="@suscriptor" OnValidSubmit="@OnValidSubmit">
+    <div class="form-field m-2">
+        <label>Nombre y Apellido</label>
+        <div class="input-group">
+            <InputText @bind-Value="@suscriptor.Nombre" placeholder="Nombre" class="form-control" />
+            <InputText @bind-Value="@suscriptor.Apellido" placeholder="Apellido" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.Nombre)" />
+        <ValidationMessage For="@(() => suscriptor.Apellido)" />
+
+        <label>Tipo Documento</label>
+        <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo documento" class="form-control">
+            @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
+            {
+                <option value="@item"> @item</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => suscriptor.TipoDocumento)" />
+
+
+        <label>N° Documento</label>
+        <div class="input-group">
+            <InputText @bind-Value="@suscriptor.NumeroDocumento" placeholder="N° Documento" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.NumeroDocumento)" />
+
+        <label>Dirección</label>
+        <div class="input-group">
+            <InputText @bind-Value="@suscriptor.Direccion" placeholder="Dirección" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.Direccion)" />
+
+        <label>Teléfono</label>
+        <div class="input-group">
+            <InputText @bind-Value="@suscriptor.Telefono" placeholder="Teléfono" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.Telefono)" />
+
+        <label>E-mail</label>
+        <div class="input-group">
+            <InputText @bind-Value="@suscriptor.Email" placeholder="E-mail" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.Email)" />
+
+        <label>Nombre de usuario</label>
+        <div class="input-group">
+            <InputText @bind-Value="@suscriptor.NombreUsuario" placeholder="Nombre de usuario" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.NombreUsuario)" />
+
+        <label>Contraseña</label>
+        <div class="input-group">
+            <input @bind="@suscriptor.Password" placeholder="Password" type="password" class="form-control" />
+        </div>
+        <ValidationMessage For="@(() => suscriptor.Password)" />
+
+        <div class="d-flex justify-content-center m-2">
+            <div class="btn-group btn-block">
+                <button type="submit" class="btn btn-success">
+                    <text style="color:white">Aceptar</text>
+                </button>
+                <button @onclick="@Volver" class="btn btn-secondary"><i class="oi oi-arrow-circle-left"></i><text style="color:white"> Volver atrás</text></button>
+            </div>
+        </div>
+    </div>
+    <DataAnnotationsValidator />
+</EditForm>
+
+@code {
+    [Parameter] public Suscriptor suscriptor { get; set; } = new Suscriptor();
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    void Volver()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

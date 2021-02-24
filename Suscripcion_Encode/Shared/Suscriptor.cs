@@ -14,11 +14,11 @@ namespace Suscripcion_Encode.Shared
         [Required]
         public string Nombre { get; set; }
         [Required]
-        public int Apellido { get; set; }
-        [Required, Phone, MaxLength(8)]
+        public string Apellido { get; set; }
+        [Required, Phone, MaxLength(12)]
         public string NumeroDocumento { get; set; }
         [Required]
-        public int TipoDocumento { get; set; }
+        public TiposDocumento TipoDocumento { get; set; }
         [Required]
         public string Direccion { get; set; }
         [Required, Phone]
@@ -29,5 +29,13 @@ namespace Suscripcion_Encode.Shared
         public string NombreUsuario { get; set; }
         [Required]
         public string Password { get; set; }
+
+        public enum TiposDocumento
+        {
+            DNI = 1,
+            LE = 2,
+            CUIL = 3,
+            CUIT
+        }
     }
 }

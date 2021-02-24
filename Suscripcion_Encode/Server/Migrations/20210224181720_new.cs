@@ -14,8 +14,8 @@ namespace Suscripcion_Encode.Server.Migrations
                     IdSuscriptor = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Apellido = table.Column<int>(type: "int", nullable: false),
-                    NumeroDocumento = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumeroDocumento = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     TipoDocumento = table.Column<int>(type: "int", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
