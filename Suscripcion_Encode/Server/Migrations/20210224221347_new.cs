@@ -36,7 +36,7 @@ namespace Suscripcion_Encode.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdSuscriptor = table.Column<int>(type: "int", nullable: false),
                     FechaAlta = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MotivoFin = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

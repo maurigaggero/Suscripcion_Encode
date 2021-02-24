@@ -16,7 +16,7 @@ namespace Suscripcion_Encode.Shared
         [ForeignKey("IdSuscriptor")]
         public virtual Suscriptor Suscriptor { get; set; }
         public DateTime FechaAlta { get; set; }
-        public DateTime FechaFin { get; set; }
+        public DateTime? FechaFin { get; set; }
         public string MotivoFin { get; set; }
     }
 }

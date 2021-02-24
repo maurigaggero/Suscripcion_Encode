@@ -11,58 +11,47 @@
         <ValidationMessage For="@(() => suscriptor.Nombre)" />
         <ValidationMessage For="@(() => suscriptor.Apellido)" />
 
-        <label>Tipo Documento</label>
-        <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo documento" class="form-control">
-            @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
-            {
-                <option value="@item"> @item</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => suscriptor.TipoDocumento)" />
-
-
-        <label>N° Documento</label>
-        <div class="input-group">
-            <InputText @bind-Value="@suscriptor.NumeroDocumento" placeholder="N° Documento" class="form-control" />
+        <div hidden="@ocultar">
+            <label>Documento</label>
+            <div class="input-group">
+                <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo" class="form-control">
+                    @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
+                    {
+                        <option value="@item"> @item</option>
+                    }
+                </InputSelect>
+                <InputText @bind-Value="@suscriptor.NumeroDocumento" placeholder="Número" class="form-control" />
+            </div>
+            <ValidationMessage For="@(() => suscriptor.TipoDocumento)" />
+            <ValidationMessage For="@(() => suscriptor.NumeroDocumento)" />
         </div>
-        <ValidationMessage For="@(() => suscriptor.NumeroDocumento)" />
 
         <label>Dirección</label>
-        <div class="input-group">
-            <InputText @bind-Value="@suscriptor.Direccion" placeholder="Dirección" class="form-control" />
-        </div>
+        <InputText @bind-Value="@suscriptor.Direccion" placeholder="Dirección" class="form-control" />
         <ValidationMessage For="@(() => suscriptor.Direccion)" />
 
         <label>Teléfono</label>
-        <div class="input-group">
-            <InputText @bind-Value="@suscriptor.Telefono" placeholder="Teléfono" class="form-control" />
-        </div>
+        <InputText @bind-Value="@suscriptor.Telefono" placeholder="Teléfono" class="form-control" />
         <ValidationMessage For="@(() => suscriptor.Telefono)" />
 
         <label>E-mail</label>
-        <div class="input-group">
-            <InputText @bind-Value="@suscriptor.Email" placeholder="E-mail" class="form-control" />
-        </div>
+        <InputText @bind-Value="@suscriptor.Email" placeholder="E-mail" class="form-control" />
         <ValidationMessage For="@(() => suscriptor.Email)" />
 
         <label>Nombre de usuario</label>
-        <div class="input-group">
-            <InputText @bind-Value="@suscriptor.NombreUsuario" placeholder="Nombre de usuario" class="form-control" />
-        </div>
+        <InputText @bind-Value="@suscriptor.NombreUsuario" placeholder="Nombre de usuario" class="form-control" />
         <ValidationMessage For="@(() => suscriptor.NombreUsuario)" />
 
         <label>Contraseña</label>
-        <div class="input-group">
-            <input @bind="@suscriptor.Password" placeholder="Password" type="password" class="form-control" />
-        </div>
+        <input @bind="@suscriptor.Password" placeholder="Password" type="password" class="form-control" />
         <ValidationMessage For="@(() => suscriptor.Password)" />
 
         <div class="d-flex justify-content-center m-2">
             <div class="btn-group btn-block">
+                <button @onclick="@Volver" type="reset" class="btn btn-secondary"><i class="oi oi-arrow-circle-left"></i><text style="color:white"> Volver atrás</text></button>
                 <button type="submit" class="btn btn-success">
                     <text style="color:white">Aceptar</text>
                 </button>
-                <button @onclick="@Volver" type="reset" class="btn btn-secondary"><i class="oi oi-arrow-circle-left"></i><text style="color:white"> Volver atrás</text></button>
             </div>
         </div>
     </div>
@@ -72,6 +61,7 @@
 @code {
     [Parameter] public Suscriptor suscriptor { get; set; } = new Suscriptor();
     [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public bool ocultar { get; set; }
 
     void Volver()
     {

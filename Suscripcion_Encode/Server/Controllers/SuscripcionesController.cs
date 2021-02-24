@@ -25,21 +25,26 @@ namespace Proyecto_Vivero.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Suscripcion>>> Get()
         {
-            return await _context.Suscripciones.OrderByDescending(x => x.FechaAlta).ToListAsync();
+            return await _context.Suscripciones
+                .Include(x => x.Suscriptor)
+                .OrderByDescending(x => x.FechaAlta).ToListAsync();
         }
 
         // GET: api/suscripciones/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Suscripcion>> Get(int id)
+        [HttpGet("existe/{tipo}/{numero}")]
+        public async Task<ActionResult<Suscripcion>> Get(Suscriptor.TiposDocumento tipo, string numero)
         {
-            return await _context.Suscripciones.FirstAsync(x => x.IdAsociacion == id);
+            return await _context.Suscripciones
+                .Include(x => x.Suscriptor)
+                .FirstAsync(x => x.Suscriptor.NumeroDocumento == numero
+                && x.Suscriptor.TipoDocumento == tipo);
         }
-
 
         // POST: api/suscripciones
         [HttpPost]
         public async Task<ActionResult> Post(Suscripcion suscripcion)
         {
+            suscripcion.FechaAlta = DateTime.Now;
             _context.Suscripciones.Add(suscripcion);
             try
             {
@@ -57,32 +62,6 @@ namespace Proyecto_Vivero.Server.Controllers
                 }
             }
             return Ok();
-        }
-
-
-        // PUT: api/suscripciones
-        [HttpPut]
-        public async Task<ActionResult> Put(Suscripcion suscripcion)
-        {
-            _context.Entry(suscripcion).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
-
-        // DELETE: api/suscripciones/5  
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Suscripcion>> Delete(int id)
-        {
-            var suscripcion = await _context.Suscripciones.FindAsync(id);
-            if (suscripcion == null)
-            {
-                return NotFound();
-            }
-
-            _context.Suscripciones.Remove(suscripcion);
-            await _context.SaveChangesAsync();
-
-            return suscripcion;
         }
 
         private bool Exists(int id)

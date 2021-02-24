@@ -10,7 +10,7 @@ using Suscripcion_Encode.Server.Data;
 namespace Suscripcion_Encode.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210224181720_new")]
+    [Migration("20210224221347_new")]
     partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace Suscripcion_Encode.Server.Migrations
                     b.Property<DateTime>("FechaAlta")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaFin")
+                    b.Property<DateTime?>("FechaFin")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdSuscriptor")

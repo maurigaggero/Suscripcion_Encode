@@ -1,0 +1,127 @@
+﻿@page "/Registrar-Suscripcion"
+
+@using Suscripcion_Encode.Shared
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@using System.Text.Json
+
+@inject IJSRuntime JS
+
+<h3>Registrar Suscripción</h3>
+
+<div class="d-flex position-sticky">
+    <div class="input-group">
+        <select @bind="tipo" placeholder="Tipo documento" class="form-control">
+            @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
+            {
+                <option value="@item"> @item</option>
+            }
+        </select>
+        <input @bind="@numero" placeholder="N° Documento" class="form-control" />
+        <div class="input-group-append">
+            <button @onclick="Solicitud" class="btn btn-primary" type="button">Suscribirme</button>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@if (ocultar == false)
+{
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th></th>
+                <th>Nombre y Apellido</th>
+                <th>Tipo Documento</th>
+                <th>Nro Documento</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>E-mail</th>
+                <th>Usuario</th>
+                <th>Contraseña</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><button class="btn btn-sm btn-warning">Modificar</button></td>
+                <td>@suscriptor.Nombre @suscriptor.Apellido</td>
+                <td>@suscriptor.TipoDocumento</td>
+                <td>@suscriptor.NumeroDocumento</td>
+                <td>@suscriptor.Direccion</td>
+                <td>@suscriptor.Telefono</td>
+                <td>@suscriptor.Email</td>
+                <td>@suscriptor.NombreUsuario</td>
+                <td>@suscriptor.Password</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <footer class="d-flex justify-content-center">
+        <button @onclick="@(() => NuevaSuscripcion(suscriptor))" class="btn btn-block btn-success">Confirmar nueva suscripción</button>
+    </footer>
+}
+
+@code {
+    private Suscriptor.TiposDocumento tipo; //tipo documento
+
+    private string numero; //numero documento
+
+    private bool ocultar = true;
+
+    Suscripcion suscripcion = new Suscripcion();
+
+    Suscriptor suscriptor = new Suscriptor();
+
+    async Task Solicitud()
+    {
+        var existe_suscriptor = await Http.GetAsync($"api/suscriptores/existe/{tipo}/{numero}");
+        var existe_suscripcion = await Http.GetAsync($"api/suscripciones/existe/{tipo}/{numero}");
+        if (existe_suscriptor.IsSuccessStatusCode && !existe_suscripcion.IsSuccessStatusCode)
+        {
+            var respuestastring = await existe_suscriptor.Content.ReadAsStringAsync();
+
+            suscriptor = JsonSerializer.Deserialize<Suscriptor>(respuestastring,
+            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+            ocultar = false;
+        }
+        else if (existe_suscriptor.IsSuccessStatusCode && existe_suscripcion.IsSuccessStatusCode)
+        {
+            var mensaje = $"Este suscriptor ya posee suscripción activa";
+            await JS.InvokeVoidAsync
+            ("alert", mensaje);
+        }
+        else
+        {
+            string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
+            if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+            {
+                NavigationManager.NavigateTo("/Registrar-Suscriptor");
+            }
+        }
+    }
+
+    async Task NuevaSuscripcion(Suscriptor suscriptor)
+    {
+        string mensajeconfirma = $"¿Desea crear nueva suscripción con fecha: {DateTime.Now}?";
+        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+        {
+            suscripcion.IdSuscriptor = suscriptor.IdSuscriptor;
+            var respuesta = await Http.PostAsJsonAsync($"api/suscripciones", suscripcion);
+            if (respuesta.IsSuccessStatusCode)
+            {
+                var mensaje = $"¡Suscripción creada con éxito!";
+                await JS.InvokeVoidAsync
+                ("alert", mensaje);
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensaje = $"Error al crear suscripción";
+                await JS.InvokeVoidAsync
+                ("alert", mensaje);
+            }
+        }
+    }
+}

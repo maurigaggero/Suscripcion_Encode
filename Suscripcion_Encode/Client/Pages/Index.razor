@@ -1,7 +1,59 @@
-﻿@page "/Index"
+﻿@page "/"
+@using Suscripcion_Encode.Shared
+@inject HttpClient Http
 
-<h1>Hello, world!</h1>
+<h3>Lista de suscripciones</h3>
 
-Welcome to your new app.
+@if (suscripciones == null)
+{
+    <text>No hay suscripciones</text>
+}
+else
+{
+    <table class="table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id Asociación</th>
+                <th>Suscriptor</th>
+                <th>Fecha Alta</th>
+                <th>Fecha Fin</th>
+                <th>Motivo Fin</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Virtualize Items="@suscripciones" Context="suscripcion">
+                <tr @key="suscripcion.IdAsociacion">
+                    <td>@suscripcion.IdAsociacion</td>
+                    <td>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <td>@suscripcion.Suscriptor.Nombre @suscripcion.Suscriptor.Apellido</td>
+                                    <td>@suscripcion.Suscriptor.TipoDocumento: @suscripcion.Suscriptor.NumeroDocumento</td>
+                                    <td>@suscripcion.Suscriptor.NombreUsuario</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>@suscripcion.FechaAlta</td>
+                    <td>@suscripcion.FechaFin</td>
+                    <td>@suscripcion.MotivoFin</td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    public List<Suscripcion> suscripciones = new List<Suscripcion>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ListaSuscripciones();
+    }
+
+    async Task ListaSuscripciones()
+    {
+        suscripciones = await Http.GetFromJsonAsync<List<Suscripcion>>($"api/suscripciones");
+    }
+}

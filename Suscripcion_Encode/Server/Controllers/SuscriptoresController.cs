@@ -28,35 +28,28 @@ namespace Proyecto_Vivero.Server.Controllers
             return await _context.Suscriptores.OrderBy(x => x.NombreUsuario).ToListAsync();
         }
 
-        // GET: api/suscriptores/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Suscriptor>> Get(int id)
+        // GET: api/suscriptores/existe/1/40574217
+        [HttpGet("existe/{tipo}/{numero}")]
+        public async Task<ActionResult<Suscriptor>> Get(Suscriptor.TiposDocumento tipo, string numero)
         {
-            return await _context.Suscriptores.FirstAsync(x => x.IdSuscriptor == id);
+            return await _context.Suscriptores
+                .FirstAsync(x => x.NumeroDocumento == numero && x.TipoDocumento == tipo);
         }
-
 
         // POST: api/suscriptores
         [HttpPost]
         public async Task<ActionResult> Post(Suscriptor suscriptor)
         {
-            _context.Suscriptores.Add(suscriptor);
-            try
+            if (Exists(suscriptor.TipoDocumento, suscriptor.NumeroDocumento))
             {
+                return Conflict();
+            }
+            else
+            {
+                _context.Suscriptores.Add(suscriptor);
                 await _context.SaveChangesAsync();
+                return Ok();
             }
-            catch (DbUpdateException)
-            {
-                if (Exists(suscriptor.IdSuscriptor))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return Ok();
         }
 
         // PUT: api/suscriptores
@@ -84,9 +77,10 @@ namespace Proyecto_Vivero.Server.Controllers
             return suscriptor;
         }
 
-        private bool Exists(int id)
+        private bool Exists(Suscriptor.TiposDocumento tipo, string numero)
         {
-            return _context.Suscriptores.Any(e => e.IdSuscriptor == id);
+            return _context.Suscriptores.Any(e => e.NumeroDocumento == numero
+                                             && e.TipoDocumento == tipo);
         }
     }
 }

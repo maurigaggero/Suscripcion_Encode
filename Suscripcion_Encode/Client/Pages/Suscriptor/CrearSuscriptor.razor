@@ -1,13 +1,14 @@
-﻿@page "/"
+﻿@page "/Registrar-Suscriptor"
 
 @using Suscripcion_Encode.Shared
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
 @inject IJSRuntime JS
 
-<h3>Crear Suscriptor</h3>
+<h3>Registrar Suscriptor</h3>
 
-<FormSuscriptor suscriptor="suscriptor" OnValidSubmit="NuevoSuscriptor"></FormSuscriptor>
+<FormSuscriptor suscriptor="suscriptor" OnValidSubmit="NuevoSuscriptor"
+                ocultar="false"></FormSuscriptor>
 
 @code {
     Suscriptor suscriptor = new Suscriptor();
@@ -27,6 +28,11 @@
                 await JS.InvokeVoidAsync
                     ("alert", mensaje);
                 NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensaje = $"Error. ¡El suscriptor ya existe!";
+                await JS.InvokeVoidAsync("alert", mensaje);
             }
         }
     }
