@@ -3,17 +3,31 @@
 @using Suscripcion_Encode.Shared
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
+@inject IJSRuntime JS
 
 <h3>Crear Suscriptor</h3>
 
-<FormSuscriptor suscriptor="suscriptor" OnValidSubmit="NuevaSuscripcion"></FormSuscriptor>
+<FormSuscriptor suscriptor="suscriptor" OnValidSubmit="NuevoSuscriptor"></FormSuscriptor>
 
 @code {
     Suscriptor suscriptor = new Suscriptor();
 
-    async Task NuevaSuscripcion()
+    async Task NuevoSuscriptor()
     {
-        await Http.PostAsJsonAsync($"api/suscriptores", suscriptor);
-        NavigationManager.NavigateTo("/");
+        string mensajeconfirma = $"¿Desea agregar nuevo suscriptor?";
+        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+        {
+            var respuesta = await Http.PostAsJsonAsync($"api/suscriptores", suscriptor);
+            if (respuesta.IsSuccessStatusCode)
+            {
+                var mensaje = $"¡Suscriptor agregado con éxito!\n" +
+                        $"Nombre de usuario: {suscriptor.NombreUsuario}\n" +
+                        $"Contraseña: {suscriptor.Password}\n";
+
+                await JS.InvokeVoidAsync
+                    ("alert", mensaje);
+                NavigationManager.NavigateTo("/");
+            }
+        }
     }
 }

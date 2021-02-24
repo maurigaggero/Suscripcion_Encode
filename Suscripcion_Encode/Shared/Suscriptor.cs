@@ -17,7 +17,7 @@ namespace Suscripcion_Encode.Shared
         public string Apellido { get; set; }
         [Required, Phone, MaxLength(12)]
         public string NumeroDocumento { get; set; }
-        [Required]
+        [Required, EnumDataType(typeof(TiposDocumento))]
         public TiposDocumento TipoDocumento { get; set; }
         [Required]
         public string Direccion { get; set; }
@@ -35,7 +35,7 @@ namespace Suscripcion_Encode.Shared
             DNI = 1,
             LE = 2,
             CUIL = 3,
-            CUIT
+            CUIT = 4
         }
     }
 }
