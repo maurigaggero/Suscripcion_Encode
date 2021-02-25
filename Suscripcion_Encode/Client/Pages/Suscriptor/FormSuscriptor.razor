@@ -13,7 +13,7 @@
 
         <label>Documento</label>
         <div class="input-group">
-            <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo" readonly="@ocultar" class="form-control">
+            <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo" hidden="@ocultar" class="form-control">
                 @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
                 {
                     <option value="@item"> @item</option>
