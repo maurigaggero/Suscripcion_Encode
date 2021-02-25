@@ -61,9 +61,9 @@
 }
 
 @code {
-    private Suscriptor.TiposDocumento tipo; //tipo documento
+    private Suscriptor.TiposDocumento tipo = 0; //tipo documento
 
-    private string numero; //numero documento
+    private string numero = string.Empty; //numero documento
 
     private bool ocultar = true;
 
@@ -73,36 +73,49 @@
 
     async Task Solicitud()
     {
-        var existe_suscriptor = await Http.GetAsync($"api/suscriptores/existe/{tipo}/{numero}");
-        var existe_suscripcion = await Http.GetAsync($"api/suscripciones/existe/{tipo}/{numero}");
-        if (existe_suscriptor.IsSuccessStatusCode && !existe_suscripcion.IsSuccessStatusCode)
+        if (tipo != 0 && numero != string.Empty)
         {
-            var respuestastring = await existe_suscriptor.Content.ReadAsStringAsync();
+            var existe_suscriptor = await Http.GetAsync($"api/suscriptores/existe/{tipo}/{numero}");
+            var existe_suscripcion = await Http.GetAsync($"api/suscripciones/existe/{tipo}/{numero}");
 
-            suscriptor = JsonSerializer.Deserialize<Suscriptor>(respuestastring,
-            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            if (existe_suscriptor.IsSuccessStatusCode && !existe_suscripcion.IsSuccessStatusCode)
+            {
+                var respuestastring = await existe_suscriptor.Content.ReadAsStringAsync();
 
-            ocultar = false;
-        }
-        else if (existe_suscriptor.IsSuccessStatusCode && existe_suscripcion.IsSuccessStatusCode)
-        {
-            var mensaje = $"Este suscriptor ya posee suscripción activa";
-            await JS.InvokeVoidAsync
-            ("alert", mensaje);
+                suscriptor = JsonSerializer.Deserialize<Suscriptor>(respuestastring,
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            ocultar = true;
+                ocultar = false;
+            }
+            else if (existe_suscriptor.IsSuccessStatusCode && existe_suscripcion.IsSuccessStatusCode)
+            {
+                var mensaje = $"Este suscriptor ya posee suscripción activa";
+                await JS.InvokeVoidAsync
+                ("alert", mensaje);
+
+                ocultar = true;
+            }
+            else
+            {
+                ocultar = true;
+
+                string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
+                if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+                {
+                    NavigationManager.NavigateTo("/Registrar-Suscriptor");
+                }
+            }
         }
         else
         {
             ocultar = true;
 
-            string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
-            if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
-            {
-                NavigationManager.NavigateTo("/Registrar-Suscriptor");
-            }
+            var mensaje = $"Especifique número y tipo de documento.";
+            await JS.InvokeVoidAsync
+            ("alert", mensaje);
         }
     }
+
 
     async Task NuevaSuscripcion(Suscriptor suscriptor)
     {

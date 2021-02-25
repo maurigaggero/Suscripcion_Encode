@@ -57,9 +57,9 @@
 }
 
 @code {
-    private Suscriptor.TiposDocumento tipo; //tipo documento
+    private Suscriptor.TiposDocumento tipo = 0; //tipo documento
 
-    private string numero; //numero documento
+    private string numero = string.Empty; //numero documento
 
     private bool ocultar = true;
 
@@ -69,24 +69,35 @@
 
     async Task Buscar()
     {
-        var existe_suscriptor = await Http.GetAsync($"api/suscriptores/existe/{tipo}/{numero}");
-
-        if (existe_suscriptor.IsSuccessStatusCode)
+        if (tipo != 0 && numero != string.Empty)
         {
-            var respuestastring = await existe_suscriptor.Content.ReadAsStringAsync();
+            var existe_suscriptor = await Http.GetAsync($"api/suscriptores/existe/{tipo}/{numero}");
 
-            suscriptor = JsonSerializer.Deserialize<Suscriptor>(respuestastring,
-            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+            if (existe_suscriptor.IsSuccessStatusCode)
+            {
+                var respuestastring = await existe_suscriptor.Content.ReadAsStringAsync();
 
-            ocultar = false;
+                suscriptor = JsonSerializer.Deserialize<Suscriptor>(respuestastring,
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+                ocultar = false;
+            }
+            else
+            {
+                string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
+                if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+                {
+                    NavigationManager.NavigateTo("/Registrar-Suscriptor");
+                }
+            }
         }
         else
         {
-            string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
-            if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
-            {
-                NavigationManager.NavigateTo("/Registrar-Suscriptor");
-            }
+            ocultar = true;
+
+            var mensaje = $"Especifique número y tipo de documento.";
+            await JS.InvokeVoidAsync
+            ("alert", mensaje);
         }
     }
 }
