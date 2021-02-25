@@ -84,8 +84,9 @@
             }
             else
             {
-                string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
-                if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+                var confirmacion = await JS.InvokeAsync<bool>("confirmar", "¿Desea crearlo?",
+                $"No existe suscriptor {tipo}:{numero}", "question");
+                if (confirmacion)
                 {
                     NavigationManager.NavigateTo("/Registrar-Suscriptor");
                 }
@@ -95,9 +96,7 @@
         {
             ocultar = true;
 
-            var mensaje = $"Especifique número y tipo de documento.";
-            await JS.InvokeVoidAsync
-            ("alert", mensaje);
+            await JS.InvokeVoidAsync("simple", "Error", "Especifique número y tipo de documento.", "error");
         }
     }
 }

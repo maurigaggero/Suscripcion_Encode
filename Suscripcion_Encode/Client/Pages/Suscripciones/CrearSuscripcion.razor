@@ -69,6 +69,8 @@
 
     Suscripcion suscripcion = new Suscripcion();
 
+    Suscripcion suscripciontemp = new Suscripcion();
+
     Suscriptor suscriptor = new Suscriptor();
 
     async Task Solicitud()
@@ -89,9 +91,14 @@
             }
             else if (existe_suscriptor.IsSuccessStatusCode && existe_suscripcion.IsSuccessStatusCode)
             {
-                var mensaje = $"Este suscriptor ya posee suscripción activa";
-                await JS.InvokeVoidAsync
-                ("alert", mensaje);
+                var respuestastring = await existe_suscripcion.Content.ReadAsStringAsync();
+
+                suscripciontemp = JsonSerializer.Deserialize<Suscripcion>(respuestastring,
+                new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+                await JS.InvokeVoidAsync("simple", "Aviso",
+                    $"Este suscriptor ya posee suscripción activa. " +
+                    $"Creada el: {suscripciontemp.FechaAlta}", "warning");
 
                 ocultar = true;
             }
@@ -99,8 +106,9 @@
             {
                 ocultar = true;
 
-                string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
-                if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+                var confirmacion = await JS.InvokeAsync<bool>("confirmar", "¿Desea crear suscriptor?",
+                $"No existe suscriptor con {tipo}:{numero}", "question");
+                if (confirmacion)
                 {
                     NavigationManager.NavigateTo("/Registrar-Suscriptor");
                 }
@@ -110,32 +118,28 @@
         {
             ocultar = true;
 
-            var mensaje = $"Especifique número y tipo de documento.";
-            await JS.InvokeVoidAsync
-            ("alert", mensaje);
+            await JS.InvokeVoidAsync("simple", "Error", "Especifique número y tipo de documento.", "error");
         }
     }
 
 
     async Task NuevaSuscripcion(Suscriptor suscriptor)
     {
-        string mensajeconfirma = $"¿Desea crear nueva suscripción con fecha: {DateTime.Now}?";
-        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+        var confirmacion = await JS.InvokeAsync<bool>
+    ("confirmar", "Confirmar",
+    $"¿Desea crear nueva suscripción con fecha: {DateTime.Now}?", "question");
+        if (confirmacion)
         {
             suscripcion.IdSuscriptor = suscriptor.IdSuscriptor;
             var respuesta = await Http.PostAsJsonAsync($"api/suscripciones", suscripcion);
             if (respuesta.IsSuccessStatusCode)
             {
-                var mensaje = $"¡Suscripción creada con éxito!";
-                await JS.InvokeVoidAsync
-                ("alert", mensaje);
+                await JS.InvokeVoidAsync("simple", "¡Éxito!", "¡Suscripción creada!", "success");
                 NavigationManager.NavigateTo("/");
             }
             else
             {
-                var mensaje = $"Error al crear suscripción";
-                await JS.InvokeVoidAsync
-                ("alert", mensaje);
+                await JS.InvokeVoidAsync("simple", "Error", "No se pudo crear suscripción", "error");
             }
         }
     }

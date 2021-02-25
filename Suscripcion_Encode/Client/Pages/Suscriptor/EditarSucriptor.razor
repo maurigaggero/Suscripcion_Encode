@@ -21,22 +21,20 @@
 
     async Task ModificarSuscriptor()
     {
-        string mensajeconfirma = $"¿Seguro desea editar suscriptor?";
-        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+        var confirmacion = await JS.InvokeAsync<bool>("confirmar", "¿Seguro desea editar suscriptor?",
+        $"{suscriptor.TipoDocumento}:{suscriptor.NumeroDocumento}. Nombre Usuario: {suscriptor.NombreUsuario}", "question");
+        if (confirmacion)
         {
             var respuesta = await Http.PutAsJsonAsync($"api/suscriptores", suscriptor);
             if (respuesta.IsSuccessStatusCode)
             {
-                var mensaje = $"¡Suscriptor editado con éxito!";
+                await JS.InvokeVoidAsync("simple", "¡Éxito!", $"Suscriptor editado!", "success");
 
-                await JS.InvokeVoidAsync
-                    ("alert", mensaje);
                 NavigationManager.NavigateTo("/Registrar-Suscripcion");
             }
             else
             {
-                var mensaje = $"Error! El nombre de usuario ya está utilizado";
-                await JS.InvokeVoidAsync("alert", mensaje);
+                await JS.InvokeVoidAsync("simple", "Error", "El nombre de usuario ya está utilizado", "error");
             }
         }
     }

@@ -53,7 +53,7 @@ namespace Proyecto_Vivero.Server.Controllers
         public async Task<ActionResult> Post(Suscriptor suscriptor)
         {
             if (Exists(suscriptor.TipoDocumento, suscriptor.NumeroDocumento)
-            || Exists(suscriptor.NombreUsuario))
+            || Exists(suscriptor.NombreUsuario, suscriptor.IdSuscriptor))
             {
                 return Conflict();
             }
@@ -70,7 +70,7 @@ namespace Proyecto_Vivero.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> Put(Suscriptor suscriptor)
         {
-            if (Exists(suscriptor.NombreUsuario))
+            if (Exists(suscriptor.NombreUsuario, suscriptor.IdSuscriptor))
             {
                 return Conflict();
             }
@@ -82,9 +82,10 @@ namespace Proyecto_Vivero.Server.Controllers
                 return Ok();
             }
         }
-        private bool Exists(string usuario)
+        private bool Exists(string usuario, int id)
         {
-            return _context.Suscriptores.Any(e => e.NombreUsuario == usuario);
+            return _context.Suscriptores.Any(e => e.NombreUsuario == usuario
+                                             && e.IdSuscriptor != id);
         }
 
         private bool Exists(Suscriptor.TiposDocumento tipo, string numero)

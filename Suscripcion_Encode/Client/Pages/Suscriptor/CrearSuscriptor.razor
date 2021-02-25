@@ -15,24 +15,24 @@
 
     async Task NuevoSuscriptor()
     {
-        string mensajeconfirma = $"¿Desea agregar nuevo suscriptor?";
-        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+        var confirmacion = await JS.InvokeAsync<bool>("confirmar", "¿Desea agregar nuevo suscriptor?",
+        $"{suscriptor.TipoDocumento}:{suscriptor.NumeroDocumento}. Nombre Usuario: {suscriptor.NombreUsuario}", "question");
+        if (confirmacion)
         {
             var respuesta = await Http.PostAsJsonAsync($"api/suscriptores", suscriptor);
             if (respuesta.IsSuccessStatusCode)
             {
-                var mensaje = $"¡Suscriptor agregado con éxito!\n" +
-                        $"Nombre de usuario: {suscriptor.NombreUsuario}\n" +
-                        $"Contraseña: {suscriptor.Password}\n";
+                var mensaje = $"¡Suscriptor agregado!\n" +
+                    $"Nombre de usuario: {suscriptor.NombreUsuario}\n" +
+                    $"Contraseña: {suscriptor.Password}\n";
 
-                await JS.InvokeVoidAsync
-                    ("alert", mensaje);
+                await JS.InvokeVoidAsync("simple", "¡Éxito!", $"{mensaje}", "success");
+
                 NavigationManager.NavigateTo("/Registrar-Suscripcion");
             }
             else
             {
-                var mensaje = $"Error! Documento o Nombre de usuario ya utilizados.";
-                await JS.InvokeVoidAsync("alert", mensaje);
+                await JS.InvokeVoidAsync("simple", "Error", " Documento o Nombre de usuario ya utilizados.", "error");
             }
         }
     }
