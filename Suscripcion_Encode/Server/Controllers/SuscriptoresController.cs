@@ -32,15 +32,20 @@ namespace Proyecto_Vivero.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Suscriptor>> Get(int id)
         {
-            return await _context.Suscriptores.FirstAsync(x => x.IdSuscriptor == id);
+            var suscriptor =  await _context.Suscriptores.FirstAsync(x => x.IdSuscriptor == id);
+            suscriptor.Password = Seguridad.DesEncriptar(suscriptor.Password);
+            return suscriptor;
         }
 
         // GET: api/suscriptores/existe/1/40574217
         [HttpGet("existe/{tipo}/{numero}")]
         public async Task<ActionResult<Suscriptor>> Get(Suscriptor.TiposDocumento tipo, string numero)
         {
-            return await _context.Suscriptores
+            var suscriptor = await _context.Suscriptores
                 .FirstAsync(x => x.NumeroDocumento == numero && x.TipoDocumento == tipo);
+
+            suscriptor.Password = Seguridad.DesEncriptar(suscriptor.Password);
+            return suscriptor;
         }
 
         // POST: api/suscriptores
