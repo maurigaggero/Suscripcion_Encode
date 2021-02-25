@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suscripcion_Encode.Server", "Suscripcion_Encode\Server\Suscripcion_Encode.Server.csproj", "{FF8F0BE4-52FE-48C5-A666-1A5802C0D133}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suscripcion_Encode.Server", "Suscripcion_Encode\Server\Suscripcion_Encode.Server.csproj", "{FF8F0BE4-52FE-48C5-A666-1A5802C0D133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suscripcion_Encode.Client", "Suscripcion_Encode\Client\Suscripcion_Encode.Client.csproj", "{06149154-9F1D-4446-BD3D-B45BE0E6E2FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suscripcion_Encode.Client", "Suscripcion_Encode\Client\Suscripcion_Encode.Client.csproj", "{06149154-9F1D-4446-BD3D-B45BE0E6E2FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suscripcion_Encode.Shared", "Suscripcion_Encode\Shared\Suscripcion_Encode.Shared.csproj", "{4343959A-46FC-469D-9F0A-B7968C6D65B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suscripcion_Encode.Shared", "Suscripcion_Encode\Shared\Suscripcion_Encode.Shared.csproj", "{4343959A-46FC-469D-9F0A-B7968C6D65B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

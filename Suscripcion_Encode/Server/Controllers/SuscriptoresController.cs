@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Suscripcion_Encode.Server.Controllers;
 using Suscripcion_Encode.Server.Data;
 using Suscripcion_Encode.Shared;
 using System;
@@ -52,6 +53,7 @@ namespace Proyecto_Vivero.Server.Controllers
             }
             else
             {
+                suscriptor.Password = Seguridad.Encriptar(suscriptor.Password);
                 _context.Suscriptores.Add(suscriptor);
                 await _context.SaveChangesAsync();
                 return Ok();
@@ -62,6 +64,7 @@ namespace Proyecto_Vivero.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> Put(Suscriptor suscriptor)
         {
+            suscriptor.Password = Seguridad.Encriptar(suscriptor.Password);
             _context.Entry(suscriptor).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok();
