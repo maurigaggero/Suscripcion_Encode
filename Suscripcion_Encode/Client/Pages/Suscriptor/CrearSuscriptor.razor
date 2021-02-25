@@ -31,7 +31,7 @@
             }
             else
             {
-                var mensaje = $"Error. ¡El suscriptor ya existe!";
+                var mensaje = $"Error! Documento o Nombre de usuario ya utilizados.";
                 await JS.InvokeVoidAsync("alert", mensaje);
             }
         }

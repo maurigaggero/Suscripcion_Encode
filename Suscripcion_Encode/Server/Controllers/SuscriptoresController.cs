@@ -52,7 +52,8 @@ namespace Proyecto_Vivero.Server.Controllers
         [HttpPost]
         public async Task<ActionResult> Post(Suscriptor suscriptor)
         {
-            if (Exists(suscriptor.TipoDocumento, suscriptor.NumeroDocumento))
+            if (Exists(suscriptor.TipoDocumento, suscriptor.NumeroDocumento)
+            || Exists(suscriptor.NombreUsuario))
             {
                 return Conflict();
             }
@@ -69,10 +70,21 @@ namespace Proyecto_Vivero.Server.Controllers
         [HttpPut]
         public async Task<ActionResult> Put(Suscriptor suscriptor)
         {
-            suscriptor.Password = Seguridad.Encriptar(suscriptor.Password);
-            _context.Entry(suscriptor).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return Ok();
+            if (Exists(suscriptor.NombreUsuario))
+            {
+                return Conflict();
+            }
+            else
+            {
+                suscriptor.Password = Seguridad.Encriptar(suscriptor.Password);
+                _context.Entry(suscriptor).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+        }
+        private bool Exists(string usuario)
+        {
+            return _context.Suscriptores.Any(e => e.NombreUsuario == usuario);
         }
 
         private bool Exists(Suscriptor.TiposDocumento tipo, string numero)

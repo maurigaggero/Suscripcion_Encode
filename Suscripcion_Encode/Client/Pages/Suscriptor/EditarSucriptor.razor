@@ -35,7 +35,7 @@
             }
             else
             {
-                var mensaje = $"Error al editar suscriptor!";
+                var mensaje = $"Error! El nombre de usuario ya está utilizado";
                 await JS.InvokeVoidAsync("alert", mensaje);
             }
         }
