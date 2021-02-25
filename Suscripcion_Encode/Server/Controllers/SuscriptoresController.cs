@@ -28,6 +28,12 @@ namespace Proyecto_Vivero.Server.Controllers
             return await _context.Suscriptores.OrderBy(x => x.NombreUsuario).ToListAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Suscriptor>> Get(int id)
+        {
+            return await _context.Suscriptores.FirstAsync(x => x.IdSuscriptor == id);
+        }
+
         // GET: api/suscriptores/existe/1/40574217
         [HttpGet("existe/{tipo}/{numero}")]
         public async Task<ActionResult<Suscriptor>> Get(Suscriptor.TiposDocumento tipo, string numero)
@@ -59,22 +65,6 @@ namespace Proyecto_Vivero.Server.Controllers
             _context.Entry(suscriptor).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return Ok();
-        }
-
-        // DELETE: api/suscriptores/5  
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Suscriptor>> Delete(int id)
-        {
-            var suscriptor = await _context.Suscriptores.FindAsync(id);
-            if (suscriptor == null)
-            {
-                return NotFound();
-            }
-
-            _context.Suscriptores.Remove(suscriptor);
-            await _context.SaveChangesAsync();
-
-            return suscriptor;
         }
 
         private bool Exists(Suscriptor.TiposDocumento tipo, string numero)

@@ -1,4 +1,4 @@
-﻿@page "/Registrar-Suscripcion"
+﻿@page "/Modificar-Suscriptor"
 
 @using Suscripcion_Encode.Shared
 @inject NavigationManager NavigationManager
@@ -7,7 +7,7 @@
 
 @inject IJSRuntime JS
 
-<h3>Registrar Suscripción</h3>
+<h3>Modificar Suscriptor</h3>
 
 <div class="d-flex position-sticky">
     <div class="input-group">
@@ -19,7 +19,7 @@
         </select>
         <input @bind="@numero" placeholder="N° Documento" class="form-control" />
         <div class="input-group-append">
-            <button @onclick="Solicitud" class="btn btn-primary" type="button">Buscar</button>
+            <button @onclick="Buscar" class="btn btn-primary" type="button">Buscar</button>
         </div>
     </div>
 </div>
@@ -54,10 +54,6 @@
             </tr>
         </tbody>
     </table>
-
-    <footer class="d-flex justify-content-center">
-        <button @onclick="@(() => NuevaSuscripcion(suscriptor))" class="btn btn-block btn-success">Confirmar nueva suscripción</button>
-    </footer>
 }
 
 @code {
@@ -71,11 +67,11 @@
 
     Suscriptor suscriptor = new Suscriptor();
 
-    async Task Solicitud()
+    async Task Buscar()
     {
         var existe_suscriptor = await Http.GetAsync($"api/suscriptores/existe/{tipo}/{numero}");
-        var existe_suscripcion = await Http.GetAsync($"api/suscripciones/existe/{tipo}/{numero}");
-        if (existe_suscriptor.IsSuccessStatusCode && !existe_suscripcion.IsSuccessStatusCode)
+
+        if (existe_suscriptor.IsSuccessStatusCode)
         {
             var respuestastring = await existe_suscriptor.Content.ReadAsStringAsync();
 
@@ -84,45 +80,12 @@
 
             ocultar = false;
         }
-        else if (existe_suscriptor.IsSuccessStatusCode && existe_suscripcion.IsSuccessStatusCode)
-        {
-            var mensaje = $"Este suscriptor ya posee suscripción activa";
-            await JS.InvokeVoidAsync
-            ("alert", mensaje);
-
-            ocultar = true;
-        }
         else
         {
-            ocultar = true;
-
             string mensajeconfirma = $"No existe suscriptor, ¿Desea crearlo?";
             if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
             {
                 NavigationManager.NavigateTo("/Registrar-Suscriptor");
-            }
-        }
-    }
-
-    async Task NuevaSuscripcion(Suscriptor suscriptor)
-    {
-        string mensajeconfirma = $"¿Desea crear nueva suscripción con fecha: {DateTime.Now}?";
-        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
-        {
-            suscripcion.IdSuscriptor = suscriptor.IdSuscriptor;
-            var respuesta = await Http.PostAsJsonAsync($"api/suscripciones", suscripcion);
-            if (respuesta.IsSuccessStatusCode)
-            {
-                var mensaje = $"¡Suscripción creada con éxito!";
-                await JS.InvokeVoidAsync
-                ("alert", mensaje);
-                NavigationManager.NavigateTo("/");
-            }
-            else
-            {
-                var mensaje = $"Error al crear suscripción";
-                await JS.InvokeVoidAsync
-                ("alert", mensaje);
             }
         }
     }

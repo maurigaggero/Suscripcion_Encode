@@ -11,20 +11,18 @@
         <ValidationMessage For="@(() => suscriptor.Nombre)" />
         <ValidationMessage For="@(() => suscriptor.Apellido)" />
 
-        <div hidden="@ocultar">
-            <label>Documento</label>
-            <div class="input-group">
-                <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo" class="form-control">
-                    @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
-                    {
-                        <option value="@item"> @item</option>
-                    }
-                </InputSelect>
-                <InputText @bind-Value="@suscriptor.NumeroDocumento" placeholder="Número" class="form-control" />
-            </div>
-            <ValidationMessage For="@(() => suscriptor.TipoDocumento)" />
-            <ValidationMessage For="@(() => suscriptor.NumeroDocumento)" />
+        <label>Documento</label>
+        <div class="input-group">
+            <InputSelect @bind-Value="suscriptor.TipoDocumento" placeholder="Tipo" readonly="@ocultar" class="form-control">
+                @foreach (string item in Enum.GetNames(typeof(Suscriptor.TiposDocumento)))
+                {
+                    <option value="@item"> @item</option>
+                }
+            </InputSelect>
+            <InputText @bind-Value="@suscriptor.NumeroDocumento" placeholder="Número" readonly="@ocultar" class="form-control" />
         </div>
+        <ValidationMessage For="@(() => suscriptor.TipoDocumento)" />
+        <ValidationMessage For="@(() => suscriptor.NumeroDocumento)" />
 
         <label>Dirección</label>
         <InputText @bind-Value="@suscriptor.Direccion" placeholder="Dirección" class="form-control" />
@@ -48,7 +46,7 @@
 
         <div class="d-flex justify-content-center m-2">
             <div class="btn-group btn-block">
-                <button @onclick="@Volver" type="reset" class="btn btn-secondary"><i class="oi oi-arrow-circle-left"></i><text style="color:white"> Volver atrás</text></button>
+                <button @onclick="@Volver" type="reset" class="btn btn-secondary"><i class="oi oi-arrow-circle-left"></i><text style="color:white"> Ir a Registrar Suscripción</text></button>
                 <button type="submit" class="btn btn-success">
                     <text style="color:white">Aceptar</text>
                 </button>
@@ -65,6 +63,6 @@
 
     void Volver()
     {
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/Registrar-Suscripcion");
     }
 }

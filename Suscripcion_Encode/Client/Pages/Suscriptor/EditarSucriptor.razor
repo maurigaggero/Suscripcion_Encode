@@ -1,7 +1,43 @@
-﻿@page "/Modificar-Suscriptor"
+﻿@page "/Modificar-Suscriptor/{id:int}"
+@using Suscripcion_Encode.Shared
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+@inject IJSRuntime JS
 
 <h3>Modificar Suscriptor</h3>
 
-@code {
+<FormSuscriptor suscriptor="suscriptor" OnValidSubmit="ModificarSuscriptor"
+                ocultar="true"> </FormSuscriptor>
 
+@code {
+    [Parameter] public int id { get; set; }
+
+    Suscriptor suscriptor = new Suscriptor();
+
+    protected override async Task OnInitializedAsync()
+    {
+        suscriptor = await Http.GetFromJsonAsync<Suscriptor>($"api/suscriptores/{id}");
+    }
+
+    async Task ModificarSuscriptor()
+    {
+        string mensajeconfirma = $"¿Seguro desea editar suscriptor?";
+        if (await JS.InvokeAsync<bool>("confirm", mensajeconfirma))
+        {
+            var respuesta = await Http.PutAsJsonAsync($"api/suscriptores", suscriptor);
+            if (respuesta.IsSuccessStatusCode)
+            {
+                var mensaje = $"¡Suscriptor editado con éxito!";
+
+                await JS.InvokeVoidAsync
+                    ("alert", mensaje);
+                NavigationManager.NavigateTo("/Registrar-Suscripcion");
+            }
+            else
+            {
+                var mensaje = $"Error al editar suscriptor!";
+                await JS.InvokeVoidAsync("alert", mensaje);
+            }
+        }
+    }
 }
